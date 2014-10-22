@@ -18,6 +18,10 @@
 
 	var delimiter = new Array();
 	var tags_callbacks = new Array();
+	
+	// global text to use for the remove tag tooltip
+	$.fn.tagsInputRemoveText = 'Removing tag';
+	
 	$.fn.doAutosize = function(o){
 	    var minWidth = $(this).data('minwidth'),
 	        maxWidth = $(this).data('maxwidth'),
@@ -100,7 +104,7 @@
                         $('<span>').text(value).append('&nbsp;&nbsp;'),
                         $('<a>', {
                             href  : '#',
-                            title : 'Removing tag',
+                            title: $.fn.tagsInputRemoveText,
                             text  : 'x'
                         }).click(function () {
                             return $('#' + id).removeTag(escape(value));
@@ -178,6 +182,7 @@
     var settings = jQuery.extend({
       interactive:true,
       defaultText:'add a tag',
+      defaultRemoveText: 'Removing tag',
       minChars:0,
       width:'300px',
       height:'100px',
@@ -192,6 +197,8 @@
       inputPadding: 6*2
     },options);
 
+	$.fn.tagsInputRemoveText = settings.defaultRemoveText;
+	
 		this.each(function() { 
 			if (settings.hide) { 
 				$(this).hide();				
@@ -349,6 +356,15 @@
 			var f = tags_callbacks[id]['onChange'];
 			f.call(obj, obj, tags[i]);
 		}
+	};
+	
+	$.fn.tagsInput.destroy = function (obj) {
+	    var id = $(obj).attr('id');
+
+	    if (tags_callbacks[id]) {
+	        // memory will not be released unless this is cleared out
+	        tags_callbacks[id] = null;
+	    }
 	};
 
 })(jQuery);
